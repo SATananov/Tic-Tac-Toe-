@@ -3,23 +3,28 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0b0f1f" />
   <title>Tic Tac Toe – Морски шах (EN/BG)</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <div class="background-decor"></div>
   <div class="container">
     <div class="app" id="app">
       <header>
-        <div style="display:flex;align-items:center;gap:10px">
-          <h1>⚔️ Tic Tac Toe / Морски шах</h1>
+        <div class="brand">
+          <div class="logo">✖︎◯</div>
+          <h1>Tic Tac Toe / Морски шах</h1>
           <span class="badge" id="badge-mode">Easy</span>
         </div>
-        <div style="font-size:13px;color:var(--muted)" id="badge-lang">EN</div>
+        <div class="meta">
+          <span id="badge-lang">EN</span>
+        </div>
       </header>
 
       <div class="panel">
         <section class="left">
-          <div class="controls">
+          <div class="controls card glass">
             <div class="field">
               <label id="label-lang">Език / Language</label>
               <select id="select-lang">
@@ -47,30 +52,45 @@
             </div>
           </div>
 
-          <div class="button-row">
-            <button id="btn-start">▶️ Започни игра</button>
-            <button id="btn-new" class="secondary">🧹 Нова сесия</button>
-            <button id="btn-replay" class="ghost" disabled>↻ Играй пак</button>
+          <div class="actions card glass">
+            <button id="btn-start" class="btn primary">▶️ Започни игра</button>
+            <button id="btn-new" class="btn">🧹 Нова сесия</button>
+            <button id="btn-replay" class="btn ghost" disabled>↻ Играй пак</button>
           </div>
 
-          <div class="status" id="status"></div>
+          <div class="status card glass" id="status"></div>
 
-          <div class="board" id="board" aria-label="Game board"></div>
+          <div class="board-wrap card glass">
+            <div class="board" id="board" aria-label="Game board"></div>
+          </div>
 
+          <!-- kept for JS compatibility, hidden via CSS -->
           <div class="sample" id="sample"></div>
         </section>
 
         <section class="right">
-          <div class="score">
-            <div class="card"><h3 id="sc-you">Ти</h3><div class="num" id="you-num">0</div></div>
-            <div class="card"><h3 id="sc-machine">Машина</h3><div class="num" id="machine-num">0</div></div>
-            <div class="card"><h3 id="sc-total">Общо игри</h3><div class="num" id="total-num">0</div></div>
+          <div class="score card glass">
+            <div class="score-item">
+              <h3 id="sc-you">Ти</h3>
+              <div class="num" id="you-num">0</div>
+            </div>
+            <div class="score-item">
+              <h3 id="sc-machine">Машина</h3>
+              <div class="num" id="machine-num">0</div>
+            </div>
+            <div class="score-item">
+              <h3 id="sc-total">Общо игри</h3>
+              <div class="num" id="total-num">0</div>
+            </div>
           </div>
-          <div class="log" id="log" aria-live="polite"></div>
+          <div class="log card glass" id="log" aria-live="polite"></div>
         </section>
       </div>
 
-      <footer id="footer">Hristo Stoynov & Tanashi</footer>
+      <footer>
+        <div class="foot-left">Made for TANASHI</div>
+        <div class="foot-right">Vanilla JS • No libraries</div>
+      </footer>
     </div>
   </div>
 
