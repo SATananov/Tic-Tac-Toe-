@@ -1,86 +1,142 @@
 :root{
-  --bg:#0b1220;--card:#121a2b;--muted:#96a0b5;--text:#e8eefc;--accent:#7aa2ff;--accent2:#64e6b9;--danger:#ff7a98;--win:#9ef29a;
+  --bg:#0b1220;--card:#121a2b;--muted:#96a0b5;--text:#e8eefc;--accent:#7aa2ff;--accent2:#64e6b9;
   --grid:#1f2a44;--cell:#162038;--cell-hover:#1b2948;--shadow:0 10px 30px rgba(0,0,0,.35);
+  /* viewport-based sizing to avoid vertical scroll */
+  --vh: 100dvh;
+  --offset: 260px;            /* header + controls + buttons + status + paddings */
+  --board-size: calc(var(--vh) - var(--offset));
 }
 *{box-sizing:border-box}
 html,body{height:100%}
-body{margin:0;background:linear-gradient(135deg,#0a0f1e,#0f1a30);font:15px/1.4 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu;color:var(--text)}
-.container{max-width:980px;margin:16px auto;padding:0 12px}
-.app{background:var(--card);border:1px solid rgba(255,255,255,.06);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;
-     max-height:calc(100dvh - 24px);display:flex;flex-direction:column}
-header{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.06);background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,0))}
-h1{font-size:18px;margin:0;letter-spacing:.2px}
-.badge{font-size:11px;color:var(--bg);background:var(--accent2);padding:3px 8px;border-radius:999px}
+body{
+  margin:0;
+  height:100dvh;              /* use dynamic viewport height to handle mobile UI */
+  overflow:hidden;            /* no page scroll */
+  background:linear-gradient(135deg,#0a0f1e,#0f1a30);
+  font:15px/1.35 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu;
+  color:var(--text)
+}
+.container{max-width:980px;height:100%;margin:0 auto;padding:8px}
+.app{
+  height:100%;
+  background:var(--card);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:12px;
+  box-shadow:var(--shadow);
+  display:grid;
+  grid-template-rows:auto 1fr auto; /* header, main, footer */
+  overflow:hidden;
+}
+header{
+  display:flex;gap:10px;align-items:center;justify-content:space-between;
+  padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.06);
+  background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,0))
+}
+h1{font-size:18px;margin:0}
+.badge{font-size:11px;color:#0a1020;background:var(--accent2);padding:2px 8px;border-radius:999px}
 
-.panel{display:grid;grid-template-columns:1.1fr .7fr;gap:14px;padding:14px;flex:1;overflow:auto}
+.panel{
+  display:grid;grid-template-columns:1.05fr .75fr;gap:12px;
+  padding:10px;min-height:0; /* critical for child overflow control */
+}
 @media (max-width:860px){.panel{grid-template-columns:1fr}}
 
-.left,.right{background:var(--bg);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px}
+.left,.right{
+  background:var(--bg);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:12px;min-height:0
+}
 
-.controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+/* Left column is a grid: controls, buttons, status, board (flex), sample */
+.left{
+  display:grid;
+  grid-template-rows:auto auto auto 1fr auto;
+  gap:8px;
+}
+
+.controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 .controls .field{display:flex;flex-direction:column;gap:6px}
 label{font-size:12px;color:var(--muted)}
-input[type=\"text\"],select{background:var(--cell);border:1px solid var(--grid);border-radius:10px;color:var(--text);padding:8px 10px;outline:none}
-input[type=\"text\"]:focus,select:focus{border-color:var(--accent)}
+input[type="text"],select{
+  background:var(--cell);border:1px solid var(--grid);border-radius:10px;color:var(--text);padding:8px 10px;outline:none;
+  min-height:34px
+}
+input[type="text"]:focus,select:focus{border-color:var(--accent)}
 
 .radio-row{display:flex;gap:8px;flex-wrap:wrap}
 .radio{display:inline-flex;align-items:center;gap:6px;background:var(--cell);border:1px solid var(--grid);border-radius:999px;padding:6px 10px;cursor:pointer}
 .radio input{accent-color:var(--accent)}
 
-.button-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.button-row{display:flex;gap:8px;flex-wrap:wrap}
 button{background:var(--accent);border:none;color:#0a1020;padding:8px 12px;border-radius:10px;font-weight:700;cursor:pointer;font-size:14px}
 button.secondary{background:#263453;color:var(--text);border:1px solid var(--grid)}
 button.ghost{background:transparent;border:1px dashed var(--grid);color:var(--muted)}
 button:disabled{opacity:.6;cursor:not-allowed}
 
-.board{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;background:var(--bg);border:1px solid var(--grid);border-radius:12px;padding:10px;margin-top:10px}
-.cell{aspect-ratio:1;border-radius:10px;background:var(--cell);display:flex;align-items:center;justify-content:center;
-      font-size:clamp(20px,7.5vmin,36px);font-weight:800;letter-spacing:1px;cursor:pointer;user-select:none;border:1px solid var(--grid);transition:.15s}
+.status{
+  padding:8px 10px;border-radius:10px;background:#0e1730;border:1px solid var(--grid);color:var(--text);min-height:36px
+}
+.status .muted{color:var(--muted)}
+
+.board{
+  /* square that auto-fits the viewport height without scrolling */
+  justify-self:center;
+  align-self:start;
+  width:min(100%, var(--board-size));
+  height:var(--board-size);
+  max-width:100%;
+  max-height:100%;
+  background:var(--bg);
+  border:1px solid var(--grid);
+  border-radius:12px;
+  padding:8px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  grid-template-rows:repeat(3,1fr);
+  gap:8px;
+  min-height:0; /* allow shrinking */
+}
+
+.cell{
+  border-radius:10px;background:var(--cell);display:flex;align-items:center;justify-content:center;
+  font-size:clamp(18px,6.5vmin,30px);font-weight:800;letter-spacing:.5px;cursor:pointer;user-select:none;border:1px solid var(--grid);transition:.12s
+}
 .cell:hover{background:var(--cell-hover);transform:translateY(-1px)}
-.cell.disabled{pointer-events:none;opacity:.6}
+.cell.disabled{pointer-events:none;opacity:.75}
 .cell.win{background:linear-gradient(180deg,rgba(220,255,220,.08),rgba(0,0,0,0));box-shadow:inset 0 0 0 1px rgba(152,255,170,.25)}
 
-.status{margin-top:10px;padding:8px 10px;border-radius:10px;background:#0e1730;border:1px solid var(--grid);color:var(--text);min-height:40px}
-.status .muted{color:var(--muted)}
-.thinking{opacity:.9}
+.sample{white-space:pre;line-height:1.2;color:var(--muted);font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace}
 
 .score{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .card{background:var(--cell);border:1px solid var(--grid);border-radius:10px;padding:10px}
 .card h3{margin:0 0 4px 0;font-size:12px;color:var(--muted)}
-.num{font-size:24px;font-weight:800}
+.num{font-size:22px;font-weight:800}
 
-.log{margin-top:10px;background:#0e1730;border:1px solid var(--grid);border-radius:10px;max-height:180px;overflow:auto;padding:8px;font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;font-size:12px}
-.sep{opacity:.5}
-.sample{white-space:pre;line-height:1.2;color:var(--muted);font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;margin-top:8px}
+.log{
+  margin-top:8px;background:#0e1730;border:1px solid var(--grid);border-radius:10px;
+  height:140px;overflow:auto;padding:8px;font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;font-size:12px
+}
 
-footer{padding:12px 16px;border-top:1px solid rgba(255,255,255,.06);font-size:12px;color:var(--muted)}
+footer{padding:10px 12px;border-top:1px solid rgba(255,255,255,.06);font-size:12px;color:var(--muted)}
 
-/* ========== Height-constrained layouts ========== */
+/* ===== Height tuning: reduce offsets on small viewports ===== */
 @media (max-height:780px){
+  :root{ --offset: 230px }
   body{font-size:14px}
-  header{padding:10px 14px}
-  .panel{padding:12px;gap:12px}
-  .left,.right{padding:12px}
-  .board{gap:8px;padding:8px}
-  .cell{font-size:clamp(18px,7vmin,32px)}
-  .log{max-height:150px}
+  h1{font-size:17px}
 }
-
-@media (max-height:640px){
-  .sample{display:none}          /* скрий примерната табличка за още място */
-  .log{max-height:120px}
-  .score{grid-template-columns:repeat(3, minmax(0,1fr))}
+@media (max-height:660px){
+  :root{ --offset: 210px }
+  .sample{display:none}
 }
-
-@media (max-height:560px){
-  .right{display:none}           /* при много ниски екрани – показваме само лявата колона */
-  .panel{grid-template-columns:1fr}
+@media (max-height:580px){
+  :root{ --offset: 190px }
+  .log{height:110px}
 }
-
-/* ========== Narrow devices tweaks ========== */
+@media (max-height:520px){
+  :root{ --offset: 175px }
+  .log{display:none}       /* при много ниски екрани – приоритираме дъската */
+}
+/* Narrow phones */
 @media (max-width:420px){
   h1{font-size:16px}
   .badge{display:none}
-  .board{gap:8px;padding:8px}
-  .cell{font-size:clamp(18px,10vmin,30px)}
 }
